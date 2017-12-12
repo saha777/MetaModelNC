@@ -18,5 +18,4 @@ public interface DepartmentDao {
 
     void delete(Integer departmentId, Integer grant);
 
-    void commit();
 }

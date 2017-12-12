@@ -17,5 +17,4 @@ public interface EmployeesDao {
 
     void delete(Integer empId, Integer grant);
 
-    void commit();
 }

@@ -18,5 +18,4 @@ public interface OfficeDao {
 
     void delete(Integer officeId, Integer grant);
 
-    void commit();
 }
