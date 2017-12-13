@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class EmployeesDaoImpls implements EmployeesDao{
-    private static Map<Integer, EmployeeCache> grantCacheMap = new HashMap<>();
+    private static Map<Integer, EmployeeCache> grantCacheMap = new HashMap<>(10);
 
     private ObjectTypes objectType;
 
@@ -132,7 +132,7 @@ public class EmployeesDaoImpls implements EmployeesDao{
         public EmployeeCache() {
             cache = CacheBuilder.newBuilder()
                     .maximumSize(100)                             // maximum 100 records can be cached
-                    .expireAfterAccess(5, TimeUnit.MINUTES)      // cache will expire after 30 minutes of access
+                    .expireAfterAccess(5, TimeUnit.MINUTES)      // cache will expire after 5 minutes of access
                     .build(new CacheLoader<Integer, Employee>() {  // build the cacheloader
                         @Override
                         public Employee load(Integer deptId) throws Exception {
