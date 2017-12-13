@@ -147,7 +147,7 @@ public class DepartmentsDaoImpls implements DepartmentDao {
         public DepartmentCache() {
             cache = CacheBuilder.newBuilder()
                     .maximumSize(100)                             // maximum 100 records can be cached
-                    .expireAfterAccess(5, TimeUnit.MINUTES)      // cache will expire after 30 minutes of access
+                    .expireAfterAccess(5, TimeUnit.MINUTES)      // cache will expire after 5 minutes of access
                     .build(new CacheLoader<Integer, Department>() {  // build the cacheloader
 
                         @Override

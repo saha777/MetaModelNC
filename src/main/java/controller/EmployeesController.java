@@ -10,6 +10,7 @@ import service.EmployeeService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/employees")
@@ -40,7 +41,8 @@ public class EmployeesController {
     public String getByDepartment(Model model, @PathVariable Integer departmentId, HttpServletRequest httpServletRequest) {
         Integer grant = MainController.getGrant(httpServletRequest);
         model.addAttribute("department", departmentId);
-        model.addAttribute("employees", employeeService.findByDepartmentId(departmentId, grant));
+        List<Employee> employeeList = employeeService.findByDepartmentId(departmentId, grant);
+        model.addAttribute("employees", employeeList);
         return "employeeList";
     }
 
@@ -53,6 +55,8 @@ public class EmployeesController {
 
         if(grant < 5)
             return "redirect:/";
+
+
 
         Employee employee = employeeService.findByObjectId(employeeId, grant);
 
