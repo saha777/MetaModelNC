@@ -2,6 +2,10 @@ package config;
 
 import metamodel.dao.*;
 import metamodel.dao.impls.*;
+import metamodel.mapper.AttrsMapperService;
+import metamodel.mapper.ParamsMapperService;
+import metamodel.mapper.impls.AttrsMapperServiceImpl;
+import metamodel.mapper.impls.ParamsMapperServiceImpl;
 import metamodel.service.MetaModelService;
 import metamodel.service.impls.MetaModelServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -58,5 +62,15 @@ public class MetaModelConfig {
     @Bean
     public MetaModelService getMetaModelService() {
         return new MetaModelServiceImpl(getAttrsDao(), getParamsDao(), getObjectTypesDao(), getObjectsDao(), getGrantsDao());
+    }
+
+    @Bean
+    public AttrsMapperService getAttrsMapperService() {
+        return new AttrsMapperServiceImpl();
+    }
+
+    @Bean
+    public ParamsMapperService getParamsMapperService() {
+        return new ParamsMapperServiceImpl(getParamsDao(), getAttrsDao(), getGrantsDao());
     }
 }

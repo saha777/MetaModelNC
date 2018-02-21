@@ -33,7 +33,7 @@ public class AttrsDaoImpl implements AttrsDao{
 
     @Override
     public List<Attrs> findByType(Integer typeId) {
-        String query = "SELECT * FROM ATTRS WHERE OBJECT_TYPE_ID = " + typeId;
+        String query = "SELECT ATTR_ID, NAME, OBJECT_TYPE_ID FROM ATTRS WHERE OBJECT_TYPE_ID = " + typeId;
         return jdbcTemplate.query(query, new AttrsMapper());
     }
 

@@ -7,6 +7,7 @@
 <body>
 <h1>Hello!</h1>
 <a href="/locations">Locations</a><br>
+<a href="/departments">Departments</a>
 <a href="/changeGrant">changeGrant</a>
 </body>
 </html>

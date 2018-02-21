@@ -1,13 +1,11 @@
 package metamodel.service.impls;
 
 import metamodel.dao.*;
-import metamodel.dao.models.Attrs;
-import metamodel.dao.models.ObjectTypes;
-import metamodel.dao.models.Objects;
-import metamodel.dao.models.Params;
+import metamodel.dao.models.*;
 import metamodel.service.MetaModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,81 +33,37 @@ public class MetaModelServiceImpl implements MetaModelService {
     }
 
     @Override
-    public Map<String, Attrs> getAttrsMap(Integer typeId, Integer grant) {
-        List<Attrs> attrs = attrsDao.findByType(typeId);
-        Map<String, Attrs> attrsMap = new HashMap<>(4);
-
-        for(Attrs attr : attrs){
-            attrsMap.put(attr.getName(), attr);
-        }
-
-        return attrsMap;
+    public List<Objects> findObjectsByTypeId(Integer typeId, Role role) {
+        List<Objects> objects = objectsDao.findByType(typeId);
+        return checkObjectsGrants(objects, role);
     }
 
     @Override
-    public Map<String, Object> getParamsMap(Integer typeId, Integer grant) {
-        List<Params> params = paramsDao.findByObjects(typeId);
-        Map<String, Object> paramsMap = new HashMap<>();
-
-        for (Params param : params) {
-
-            if(grantsDao.findByAttrId(param.getAttrId()).getR() > grant)
-                continue;
-
-            Attrs attr = attrsDao.findById(param.getAttrId());
-
-            if (paramsMap.containsKey(attr.getName())) {
-
-                Object temp = paramsMap.get(attr.getName());
-
-                List<Params> paramValues = null;
-
-                if (temp instanceof List) {
-                    paramValues = (List<Params>) temp;
-                } else {
-                    paramValues = new ArrayList<>();
-                    paramValues.add((Params) temp);
-                }
-
-                paramValues.add(param);
-                paramsMap.put(attr.getName(), paramValues);
-
-                continue;
-            }
-
-            paramsMap.put(attr.getName(), param);
-        }
-
-        return paramsMap;
-    }
-
-    @Override
-    public List<Objects> findObjectsByTypeName(String typeName, Integer grant) {
-        ObjectTypes type = this.findObjectTypeByTypeName(typeName);
+    public List<Objects> findObjectsByTypeName(String typeName, Role role) {
+        ObjectTypes type = findObjectTypeByTypeName(typeName);
         List<Objects> objects = objectsDao.findByType(type.getTypeId());
-        return checkObjectsGrants(objects, grant);
+        return checkObjectsGrants(objects, role);
     }
 
     @Override
-    public List<Objects> findObjectsByParentId(Integer parentId, Integer grant) {
+    public List<Objects> findObjectsByParentId(Integer parentId, Role role) {
         List<Objects> objects = objectsDao.findByParentId(parentId);
-        return checkObjectsGrants(objects, grant);
+        return checkObjectsGrants(objects, role);
     }
 
-    private List<Objects> checkObjectsGrants(List<Objects> objects, Integer grant) {
+    private List<Objects> checkObjectsGrants(List<Objects> objects, Role role) {
         List<Objects> checkedObjects = new ArrayList<>();
 
         for(Objects object : objects)
-            if(grantsDao.findByObjectId(object.getObjectId()).getR() <= grant)
+            if(grantsDao.isReadableObj(role, object.getObjectId()))
                 checkedObjects.add(object);
 
         return checkedObjects;
     }
 
     @Override
-    public Objects findObjectByObjectId(Integer objectId, Integer grant) {
-        if (grantsDao.findByObjectId(objectId).getR() > grant)
-            return new Objects();
+    public Objects findObjectByObjectId(Integer objectId, Role role) {
+        if (!grantsDao.isReadableObj(role, objectId)) return null;
 
         return objectsDao.findById(objectId);
     }
@@ -120,40 +74,39 @@ public class MetaModelServiceImpl implements MetaModelService {
     }
 
     @Override
-    public Integer saveObject(Objects object, Integer grant) {
+    public Integer saveObject(Objects object, Role role) {
         return objectsDao.save(object);
     }
 
     @Override
-    public void saveParams(List<Params> params, Integer grant) {
+    public void saveParams(List<Params> params, Role role) {
         paramsDao.save(params);
     }
 
     @Override
-    public void updateObject(Objects object, Integer grant) {
-        if(grantsDao.findByObjectId(object.getObjectId()).getW() <= grant)
+    public void updateObject(Objects object, Role role) {
+        if(grantsDao.isWritableObj(role, object.getObjectId()))
             objectsDao.update(object);
     }
 
     @Override
-    public void updateParams(List<Params> params, Integer grant) {
+    public void updateParams(List<Params> params, Role role) {
         for (Params param : params)
-            this.updateParams(param, grant);
+                this.updateParams(param, role);
     }
 
     @Override
-    public void updateParams(Params param, Integer grant) {
-        if(grantsDao.findByObjectId(param.getObjectId()).getW() <= grant)
-            paramsDao.update(param);
+    public void updateParams(Params param, Role role) {
+        if(grantsDao.isWritableAttr(role, param.getObjectId(), param.getAttrId())) paramsDao.update(param);
     }
 
     @Override
-    public void deleteParamsByObjectId(Integer objectId, Integer grant) {
+    public void deleteParamsByObjectId(Integer objectId, Role role) {
         paramsDao.deleteByObjectId(objectId);
     }
 
     @Override
-    public void deleteObjectById(Integer objectId, Integer grant) {
+    public void deleteObjectById(Integer objectId, Role role) {
         objectsDao.deleteById(objectId);
     }
 }

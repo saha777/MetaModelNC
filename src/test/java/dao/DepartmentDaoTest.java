@@ -2,6 +2,7 @@ package dao;
 
 import config.DaoConfig;
 import entities.Department;
+import metamodel.dao.models.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,17 @@ import java.util.List;
 public class DepartmentDaoTest {
     @Autowired
     private DepartmentDao departmentDao;
+    private Role role;
+
+    public void roleInit() {
+        role = new Role();
+        role.setRoleId(2);
+        role.setName("PM");
+    }
 
     @Test
     public void findAllTest() {
-        List<Department> departments = departmentDao.findAll(5);
+        List<Department> departments = departmentDao.findAll(role);
         for (Department department : departments) {
             System.out.println(department.toString());
         }
@@ -26,7 +34,7 @@ public class DepartmentDaoTest {
 
     @Test
     public void findOneTest() {
-        Department department = departmentDao.findById(8, 5);
+        Department department = departmentDao.findById(8, role);
         System.out.println(department.toString());
     }
 }

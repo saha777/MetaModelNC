@@ -13,7 +13,7 @@
     </tr>
     <#list employees as employee>
         <tr>
-            <td><a href="/employees/emp/${employee.objectId}">${employee.objectId}</a></td>
+            <td><a href="/employees/${employee.objectId}">${employee.objectId}</a></td>
             <td>${employee.name}</td>
             <!--<td><a href="/delete/${employee.objectId}">delete</a></td>
             <td><a href="/employees/update/${employee.objectId}">update</a></td>-->

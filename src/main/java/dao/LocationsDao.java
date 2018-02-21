@@ -1,18 +1,19 @@
 package dao;
 
 import entities.Location;
+import metamodel.dao.models.Role;
 
 import java.util.List;
 
 public interface LocationsDao {
 
-    List<Location> findAll(Integer grant);
+    List<Location> findAll(Role role);
 
-    Location findById(Integer id, Integer grant);
+    Location findById(Integer id, Role role);
 
-    void save(Location location, Integer grant);
+    Integer save(Location location, Role role);
 
-    void update(Location location, Integer grant);
+    void update(Location location, Role role);
 
-    void delete(Integer locationId, Integer grant);
+    void delete(Integer locationId, Role role);
 }

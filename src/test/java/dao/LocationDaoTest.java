@@ -2,12 +2,12 @@ package dao;
 
 import config.DaoConfig;
 import entities.Location;
+import metamodel.dao.models.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import service.LocationService;
 
 import java.util.List;
 
@@ -16,13 +16,17 @@ import java.util.List;
 public class LocationDaoTest {
     @Autowired
     private LocationsDao locationsDao;
+    private Role role;
 
-    @Autowired
-    private LocationService locationService;
+    public void roleInit() {
+        role = new Role();
+        role.setRoleId(2);
+        role.setName("PM");
+    }
 
     @Test
     public void findAllTest() {
-        List<Location> locations = locationService.findAll(5);
+        List<Location> locations = locationsDao.findAll(role);
         for (Location location : locations) {
             System.out.println(location.toString());
         }
@@ -30,7 +34,7 @@ public class LocationDaoTest {
 
     @Test
     public void findOneTest() {
-        Location location = locationsDao.findById(8, 5);
+        Location location = locationsDao.findById(8, role);
         System.out.println(location.toString());
     }
 
@@ -38,19 +42,19 @@ public class LocationDaoTest {
     public void saveTest() {
         Location location = new Location();
         location.setName("Berlik");
-        locationsDao.save(location, 5);
+        locationsDao.save(location, role);
     }
 
     @Test
     public void updateTest() {
-        Location location = locationsDao.findById(52, 5);
+        Location location = locationsDao.findById(52, role);
         location.setName("Dallas");
-        locationsDao.update(location, 5);
+        locationsDao.update(location, role);
     }
 
     @Test
     public void deleteTest() {
-        locationsDao.delete(68, 5);
-        locationsDao.delete(70, 5);
+        locationsDao.delete(68, role);
+        locationsDao.delete(70, role);
     }
 }

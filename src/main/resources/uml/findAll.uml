@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="364.8306381118883" y="228.0">metamodel.dao.AttrsDao</node>
+    <node x="79.83063811188822" y="228.0">metamodel.dao.ObjectTypesDao</node>
+    <node x="616.4306381118884" y="228.0">metamodel.dao.GrantsDao</node>
+    <node x="0.0" y="427.0">metamodel.mapper.impls.AttrsMapperServiceImpl</node>
+    <node x="322.4181818181819" y="427.0">metamodel.service.impls.MetaModelServiceImpl</node>
+    <node x="235.83063811188822" y="228.0">metamodel.dao.ObjectsDao</node>
+    <node x="232.7744789875427" y="-72.47233606557376">controller.EmployeesController</node>
+    <node x="1146.3589233682987" y="0.0">dao.converter.Converter</node>
+    <node x="647.7250000000001" y="79.0">metamodel.mapper.AttrsMapperService</node>
+    <node x="998.7398819930072" y="79.0">dao.converter.impls.ConverterImpl</node>
+    <node x="960.4630900349653" y="228.0">dao.AbstractDao</node>
+    <node x="597.1211319930071" y="427.0">metamodel.mapper.impls.ParamsMapperServiceImpl</node>
+    <node x="818.7250000000001" y="79.0">metamodel.service.MetaModelService</node>
+    <node x="488.4306381118883" y="228.0">metamodel.dao.ParamsDao</node>
+    <node x="1369.3577214452216" y="228.0">dao.cache.Cache</node>
+    <node x="1155.1148819930072" y="79.0">metamodel.mapper.ParamsMapperService</node>
+    <node x="1182.1148819930072" y="427.0">dao.impls.EmployeesDaoImpls</node>
+    <node x="984.9898819930072" y="0.0">dao.converter.reflections.Reflection</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="metamodel.mapper.impls.ParamsMapperServiceImpl" target="metamodel.dao.GrantsDao">
+      <point x="27.0" y="-14.5" />
+      <point x="718.6211319930071" y="327.0" />
+      <point x="667.9306381118884" y="327.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="metamodel.service.impls.MetaModelServiceImpl" target="metamodel.dao.ParamsDao">
+      <point x="30.909090909090878" y="-14.5" />
+      <point x="438.32727272727277" y="377.0" />
+      <point x="501.9306381118883" y="377.0" />
+      <point x="-40.5" y="14.5" />
+    </edge>
+    <edge source="dao.impls.EmployeesDaoImpls" target="dao.cache.Cache">
+      <point x="67.8125" y="-14.5" />
+      <point x="1327.4273819930072" y="407.0" />
+      <point x="1436.8577214452216" y="407.0" />
+      <point x="27.0" y="14.5" />
+    </edge>
+    <edge source="metamodel.mapper.impls.ParamsMapperServiceImpl" target="metamodel.dao.ParamsDao">
+      <point x="0.0" y="-14.5" />
+      <point x="691.6211319930071" y="337.0" />
+      <point x="582.9306381118884" y="337.0" />
+      <point x="40.5" y="14.5" />
+    </edge>
+    <edge source="dao.impls.EmployeesDaoImpls" target="metamodel.service.MetaModelService">
+      <point x="-9.6875" y="-14.5" />
+      <point x="1249.9273819930072" y="367.0" />
+      <point x="1300.3589233682987" y="367.0" />
+      <point x="1300.3589233682987" y="148.0" />
+      <point x="946.4750000000001" y="148.0" />
+      <point x="54.75" y="14.5" />
+    </edge>
+    <edge source="dao.impls.EmployeesDaoImpls" target="dao.AbstractDao">
+      <point x="-48.4375" y="-14.5" />
+      <point x="1211.1773819930072" y="287.0" />
+      <point x="1016.9630900349653" y="287.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="dao.cache.Cache" target="dao.converter.Converter">
+      <point x="20.25" y="-14.5" />
+      <point x="1430.1077214452216" y="59.0" />
+      <point x="1229.692256701632" y="59.0" />
+      <point x="33.33333333333337" y="14.5" />
+    </edge>
+    <edge source="metamodel.mapper.impls.ParamsMapperServiceImpl" target="metamodel.mapper.ParamsMapperService">
+      <point x="81.0" y="-14.5" />
+      <point x="772.6211319930071" y="407.0" />
+      <point x="1181.601201923077" y="407.0" />
+      <point x="1181.601201923077" y="208.0" />
+      <point x="1237.6148819930072" y="208.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="metamodel.service.impls.MetaModelServiceImpl" target="metamodel.dao.GrantsDao">
+      <point x="77.27272727272725" y="-14.5" />
+      <point x="484.69090909090914" y="407.0" />
+      <point x="647.3306381118882" y="407.0" />
+      <point x="-20.600000000000023" y="14.5" />
+    </edge>
+    <edge source="dao.AbstractDao" target="metamodel.mapper.ParamsMapperService">
+      <point x="49.4375" y="-14.5" />
+      <point x="1066.4005900349653" y="198.0" />
+      <point x="1204.6148819930072" y="198.0" />
+      <point x="-33.0" y="14.5" />
+    </edge>
+    <edge source="metamodel.mapper.impls.ParamsMapperServiceImpl" target="metamodel.dao.AttrsDao">
+      <point x="-81.0" y="-14.5" />
+      <point x="610.6211319930071" y="367.0" />
+      <point x="430.63063811188823" y="367.0" />
+      <point x="18.799999999999955" y="14.5" />
+    </edge>
+    <edge source="dao.AbstractDao" target="metamodel.service.MetaModelService">
+      <point x="-7.0625" y="-14.5" />
+      <point x="1009.9005900349653" y="158.0" />
+      <point x="909.9750000000001" y="158.0" />
+      <point x="18.25" y="14.5" />
+    </edge>
+    <edge source="dao.AbstractDao" target="metamodel.mapper.AttrsMapperService">
+      <point x="-49.4375" y="-14.5" />
+      <point x="967.5255900349653" y="188.0" />
+      <point x="742.1000000000001" y="188.0" />
+      <point x="18.875" y="14.5" />
+    </edge>
+    <edge source="metamodel.mapper.impls.AttrsMapperServiceImpl" target="metamodel.dao.AttrsDao">
+      <point x="43.75" y="-14.5" />
+      <point x="131.25" y="407.0" />
+      <point x="374.23063811188825" y="407.0" />
+      <point x="-37.60000000000002" y="14.5" />
+    </edge>
+    <edge source="dao.impls.EmployeesDaoImpls" target="metamodel.mapper.AttrsMapperService">
+      <point x="-67.8125" y="-14.5" />
+      <point x="1191.8023819930072" y="297.0" />
+      <point x="807.5243881118884" y="297.0" />
+      <point x="807.5243881118884" y="198.0" />
+      <point x="704.3500000000001" y="198.0" />
+      <point x="-18.875" y="14.5" />
+    </edge>
+    <edge source="metamodel.service.impls.MetaModelServiceImpl" target="metamodel.dao.ObjectTypesDao">
+      <point x="-77.27272727272725" y="-14.5" />
+      <point x="330.14545454545464" y="397.0" />
+      <point x="113.58063811188822" y="397.0" />
+      <point x="-33.75" y="14.5" />
+    </edge>
+    <edge source="metamodel.service.impls.MetaModelServiceImpl" target="metamodel.dao.ObjectsDao">
+      <point x="-30.909090909090878" y="-14.5" />
+      <point x="376.509090909091" y="367.0" />
+      <point x="263.0806381118882" y="367.0" />
+      <point x="-27.25" y="14.5" />
+    </edge>
+    <edge source="controller.EmployeesController" target="metamodel.dao.GrantsDao">
+      <point x="-39.5" y="-14.5" />
+      <point x="865.8502986596739" y="307.0" />
+      <point x="709.1306381118884" y="307.0" />
+      <point x="41.200000000000045" y="14.5" />
+    </edge>
+    <edge source="dao.cache.Cache" target="metamodel.mapper.ParamsMapperService">
+      <point x="-20.25" y="-14.5" />
+      <point x="1389.6077214452216" y="128.0" />
+      <point x="1303.6148819930072" y="128.0" />
+      <point x="66.0" y="14.5" />
+    </edge>
+    <edge source="metamodel.service.impls.MetaModelServiceImpl" target="metamodel.dao.AttrsDao">
+      <point x="0.0" y="-14.5" />
+      <point x="407.4181818181819" y="347.0" />
+      <point x="393.0306381118883" y="347.0" />
+      <point x="-18.799999999999955" y="14.5" />
+    </edge>
+    <edge source="dao.AbstractDao" target="dao.converter.impls.ConverterImpl">
+      <point x="7.0625" y="-14.5" />
+      <point x="1024.0255900349653" y="168.0" />
+      <point x="1060.7398819930072" y="168.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="dao.impls.EmployeesDaoImpls" target="metamodel.mapper.ParamsMapperService">
+      <point x="9.6875" y="-14.5" />
+      <point x="1269.3023819930072" y="377.0" />
+      <point x="1358.8577214452216" y="377.0" />
+      <point x="1358.8577214452216" y="138.0" />
+      <point x="1270.6148819930072" y="138.0" />
+      <point x="33.0" y="14.5" />
+    </edge>
+    <edge source="metamodel.service.impls.MetaModelServiceImpl" target="metamodel.service.MetaModelService">
+      <point x="-46.363636363636374" y="-14.5" />
+      <point x="361.0545454545455" y="377.0" />
+      <point x="225.33063811188822" y="377.0" />
+      <point x="225.33063811188822" y="208.0" />
+      <point x="836.9750000000001" y="208.0" />
+      <point x="-54.75" y="14.5" />
+    </edge>
+    <edge source="metamodel.mapper.impls.AttrsMapperServiceImpl" target="metamodel.mapper.AttrsMapperService">
+      <point x="-43.75" y="-14.5" />
+      <point x="43.75" y="198.0" />
+      <point x="666.6000000000001" y="198.0" />
+      <point x="-56.625" y="14.5" />
+    </edge>
+    <edge source="dao.AbstractDao" target="dao.converter.Converter">
+      <point x="21.1875" y="-14.5" />
+      <point x="1038.1505900349653" y="178.0" />
+      <point x="1144.6148819930072" y="178.0" />
+      <point x="1144.6148819930072" y="59.0" />
+      <point x="1196.3589233682987" y="59.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="dao.converter.impls.ConverterImpl" target="dao.converter.Converter">
+      <point x="41.333333333333314" y="-14.5" />
+      <point x="1102.0732153263405" y="49.0" />
+      <point x="1163.0255900349653" y="49.0" />
+      <point x="-33.33333333333334" y="14.5" />
+    </edge>
+    <edge source="controller.EmployeesController" target="dao.AbstractDao">
+      <point x="39.5" y="-14.5" />
+      <point x="944.8502986596739" y="397.0" />
+      <point x="979.2964233682986" y="397.0" />
+      <point x="-37.66666666666666" y="14.5" />
+    </edge>
+    <edge source="dao.converter.impls.ConverterImpl" target="dao.converter.reflections.Reflection">
+      <point x="-41.33333333333334" y="-14.5" />
+      <point x="1019.4065486596738" y="59.0" />
+      <point x="1010.2398819930072" y="59.0" />
+      <point x="-25.25" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6907289455060156" x="696.5" y="243.0" />
+  <SelectedNodes>
+    <node>controller.EmployeesController</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -1,12 +1,16 @@
 package controller;
 
+import dao.AbstractDao;
+import dao.EmployeesDao;
 import entities.Employee;
+import metamodel.dao.GrantsDao;
+import metamodel.dao.models.Grants;
+import metamodel.dao.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import service.EmployeeService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,21 +20,27 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeesController {
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeesDao employeesDao;
+
+    @Autowired
+    private GrantsDao grantsDao;
+
+    public EmployeesController() {
+    }
 
     @GetMapping("/")
     public String getAll(Model model, HttpServletRequest httpServletRequest) {
-        Integer grant = MainController.getGrant(httpServletRequest);
-        model.addAttribute("employees", employeeService.findAll(grant));
+        Role role = MainController.getGrant(grantsDao, httpServletRequest);
+        model.addAttribute("employees", employeesDao.findAll(role));
         return "employeeList";
     }
 
-    @GetMapping("/emp/{empId}")
+    @GetMapping("/{empId}")
     public String getEmpPage(Model model, @PathVariable Integer empId, HttpServletRequest httpServletRequest) {
-        Integer grant = MainController.getGrant(httpServletRequest);
-        Employee employee = employeeService.findByObjectId(empId, grant);
+        Role role = MainController.getGrant(grantsDao, httpServletRequest);
+        Employee employee = employeesDao.findById(empId, role);
 
-        if(employee == null)
+        if (employee == null)
             return "redirect:/";
 
         model.addAttribute("employee", employee);
@@ -39,9 +49,9 @@ public class EmployeesController {
 
     @GetMapping("/department/{departmentId}")
     public String getByDepartment(Model model, @PathVariable Integer departmentId, HttpServletRequest httpServletRequest) {
-        Integer grant = MainController.getGrant(httpServletRequest);
+        Role role = MainController.getGrant(grantsDao, httpServletRequest);
+        List<Employee> employeeList = employeesDao.findByParentId(departmentId, role);
         model.addAttribute("department", departmentId);
-        List<Employee> employeeList = employeeService.findByDepartmentId(departmentId, grant);
         model.addAttribute("employees", employeeList);
         return "employeeList";
     }
@@ -50,29 +60,19 @@ public class EmployeesController {
     public String getUpdatePage(
             Model model,
             @PathVariable Integer employeeId,
-            HttpServletRequest httpServletRequest){
-        Integer grant = MainController.getGrant(httpServletRequest);
+            HttpServletRequest httpServletRequest) {
+        Role role = MainController.getGrant(grantsDao, httpServletRequest);
+        Employee employee = employeesDao.findById(employeeId, role);
 
-        if(grant < 5)
-            return "redirect:/";
-
-
-
-        Employee employee = employeeService.findByObjectId(employeeId, grant);
-
-        model.addAttribute("grant", grant);
+        model.addAttribute("grant", role);
         model.addAttribute("employee", employee);
         return "updateEmp";
     }
 
     @PostMapping("/update")
     public String setUpdateEmp(@ModelAttribute Employee employee, HttpServletRequest httpServletRequest) {
-        Integer grant = MainController.getGrant(httpServletRequest);
-
-        if(grant < 5)
-            return "redirect:/";
-
-        employeeService.update(employee, grant);
+        Role role = MainController.getGrant(grantsDao, httpServletRequest);
+        employeesDao.update(employee, role);
         return "redirect:/";
     }
 }

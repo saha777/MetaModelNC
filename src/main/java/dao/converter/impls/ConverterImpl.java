@@ -10,14 +10,12 @@ import metamodel.service.MetaModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ConverterImpl<T> implements Converter<T> {
-    @Autowired
-    private MetaModelService metaModelService;
     private Reflection<T> reflection;
 
     public ConverterImpl() {
@@ -57,8 +55,6 @@ public class ConverterImpl<T> implements Converter<T> {
         }
         return params;
     }
-
-
 
     @Override
     public Objects convertTemplateToObjects(T object, Integer objectTypeId) {

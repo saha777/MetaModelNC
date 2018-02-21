@@ -1,8 +1,15 @@
 package metamodel.dao;
 
-import metamodel.dao.models.Grants;
+import metamodel.dao.models.Role;
+
+import java.util.List;
 
 public interface GrantsDao {
-    Grants findByObjectId(Integer objectId);
-    Grants findByAttrId(Integer attrId);
+    List<Role> findAll();
+    Role findById(Integer roleId);
+    Role findByName(String roleName);
+    Boolean isReadableObj(Role role, Integer objId);
+    Boolean isWritableObj(Role role, Integer objId);
+    Boolean isReadableAttr(Role role, Integer objId, Integer attrId);
+    Boolean isWritableAttr(Role role, Integer objId, Integer attrId);
 }

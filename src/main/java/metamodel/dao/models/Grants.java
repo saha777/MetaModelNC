@@ -1,49 +1,29 @@
 package metamodel.dao.models;
 
 public class Grants {
-    private Integer objectId;
-    private Integer attrId;
-    private Integer r;
-    private Integer w;
+    private Boolean r;
+    private Boolean w;
 
-    public Integer getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(Integer objectId) {
-        this.objectId = objectId;
-    }
-
-    public Integer getAttrId() {
-        return attrId;
-    }
-
-    public void setAttrId(Integer attrId) {
-        this.attrId = attrId;
-    }
-
-    public Integer getR() {
+    public Boolean getR() {
         return r;
     }
 
-    public void setR(Integer r) {
+    public void setR(Boolean r) {
         this.r = r;
     }
 
-    public Integer getW() {
+    public Boolean getW() {
         return w;
     }
 
-    public void setW(Integer w) {
+    public void setW(Boolean w) {
         this.w = w;
     }
 
     @Override
     public String toString() {
         return "Grants{" +
-                "objectId=" + objectId +
-                ", attrId=" + attrId +
-                ", r=" + r +
+                "r=" + r +
                 ", w=" + w +
                 '}';
     }

@@ -18,10 +18,7 @@
     <#if employee.hiredate??>
         <p>Hiredate : ${employee.hiredate}</p>
     </#if>
-
-    <#if grant gte 5 >
-        <a href="/employees/update/${employee.objectId}">Update</a><br>
-    </#if>
+    <a href="/employees/update/${employee.objectId}">Update</a><br>
 
     <a href="/employees/department/${employee.parentId}">Back</a>
 </body>

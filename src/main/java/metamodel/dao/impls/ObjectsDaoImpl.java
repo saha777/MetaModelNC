@@ -49,7 +49,7 @@ public class ObjectsDaoImpl implements ObjectsDao {
         } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
         }
-        return new Objects();
+        return null;
     }
 
     @Override

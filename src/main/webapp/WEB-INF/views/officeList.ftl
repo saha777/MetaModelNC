@@ -13,10 +13,8 @@
     </tr>
     <#list offices as office>
         <tr>
-            <td><a href="/office/${office.objectId}">${office.objectId}</a></td>
+            <td><a href="/departments/${office.objectId}">${office.objectId}</a></td>
             <td>${office.name}</td>
-            <!--<td><a href="/delete/${office.objectId}">delete</a></td>
-            <td><a href="/update/${office.objectId}">update</a></td>-->
         </tr>
     </#list>
 </table>

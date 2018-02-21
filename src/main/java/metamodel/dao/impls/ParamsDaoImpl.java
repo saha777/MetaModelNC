@@ -82,14 +82,14 @@ public class ParamsDaoImpl implements ParamsDao{
     @Override
     public void save(Params object) {
         String saveSql = "INSERT INTO PARAMS(OBJECT_ID, RELATION_ID, ATTR_ID, DESCRIPTION, TEXT_VALUE, NUMBER_VALUE, DATE_VALUE) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        Object[] params = {object.getObjectId(), object.getRelationId(), object.getAttrId(), object.getDescription(), object.getTextValue(), object.getNumberValue(), object.getDescription()};
+        Object[] params = {object.getObjectId(), object.getRelationId(), object.getAttrId(), object.getDescription(), object.getTextValue(), object.getNumberValue(), object.getDateValue()};
         jdbcTemplate.update(saveSql, params);
     }
 
     @Override
     public void update(Params object) {
-        String saveSql = "UPDATE PARAMS SET  RELATION_ID = ?, ATTR_ID = ?, DESCRIPTION = ?, TEXT_VALUE = ?, NUMBER_VALUE = ?, DATE_VALUE = ?  WHERE OBJECT_ID = ?";
-        Object[] params = {object.getRelationId(), object.getAttrId(), object.getDescription(), object.getTextValue(), object.getNumberValue(), object.getDescription(), object.getObjectId()};
+        String saveSql = "UPDATE PARAMS SET  RELATION_ID = ?, DESCRIPTION = ?, TEXT_VALUE = ?, NUMBER_VALUE = ?, DATE_VALUE = ?  WHERE OBJECT_ID = ? AND ATTR_ID = ?";
+        Object[] params = {object.getRelationId(), object.getDescription(), object.getTextValue(), object.getNumberValue(), object.getDateValue(), object.getObjectId(), object.getAttrId()};
         jdbcTemplate.update(saveSql, params);
     }
 

@@ -6,7 +6,11 @@
 </head>
 <body>
 <form action="/changeGrant" method="post">
-    Grant: <input type="number" name="grant" value="${grant}" min="1" max="10">
+    <select name="role">
+        <#list roles as role>
+            <option value="${role.name}">${role.name}</option>
+        </#list>
+    </select>
     <input type="submit" value="Change">
 </form>
 </body>
