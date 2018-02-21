@@ -1,14 +1,15 @@
 package dao.impls;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import dao.AbstractDao;
 import dao.LocationsDao;
+import dao.cache.Cache;
 import dao.converter.Converter;
-import entities.Department;
+import dao.converter.impls.ConverterImpl;
 import entities.Location;
 import metamodel.dao.models.*;
 import entities.ObjectType;
+import metamodel.mapper.AttrsMapperService;
+import metamodel.mapper.ParamsMapperService;
 import metamodel.service.MetaModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,151 +17,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class LocationsDaoImpl implements LocationsDao {
-    private static Map<Integer, LocationCache> grantCacheMap = new HashMap<>();
-
-    private ObjectTypes objectType;
-
-    private Converter<Location> locationConverter;
-    private MetaModelService metaModelService;
+public class LocationsDaoImpl extends AbstractDao<Location> implements LocationsDao {
+    private static Map<Integer, Cache<Location>> grantCacheMap = new ConcurrentHashMap<>();
 
     @Autowired
     public LocationsDaoImpl(
             MetaModelService metaModelService,
-            Converter<Location> locationConverter) {
-        this.metaModelService = metaModelService;
-        this.locationConverter = locationConverter;
-        this.objectType = metaModelService.findObjectTypeByTypeName(ObjectType.LOCATION.toString());
+            AttrsMapperService attrsMapperService,
+            ParamsMapperService paramsMapperService) {
+        super(metaModelService, attrsMapperService, paramsMapperService, ObjectType.LOCATION);
+    }
+
+
+    @Override
+    protected Integer getObjId(Location temp) {
+        return temp.getObjectId();
     }
 
     @Override
-    public List<Location> findAll(Integer grant) {
-        List<Objects> objects = metaModelService.findObjectsByTypeName(objectType.getName(), grant);
-        List<Location> locations = new ArrayList<>();
-        for(Objects object : objects){
-            locations.add(getFromCache(object, grant));
-        }
-        return locations;
+    protected Location insertIdIntoTemplate(Location temp, Integer id) {
+        temp.setObjectId(id);
+        return temp;
     }
 
     @Override
-    public Location findById(Integer id, Integer grant) {
-        Objects object = metaModelService.findObjectByObjectId(id, grant);
-        return getFromCache(object, grant);
+    protected Location checkInCache(Objects object, Role role) {
+        if (object == null) return null;
+        Cache<Location> cache = getCache(role);
+        return cache.getByObject(object, role);
     }
 
     @Override
-    public void save(Location location, Integer grant) {
-        Integer objectTypeId = objectType.getTypeId();
-
-        location.setObjectId(
-                metaModelService.saveObject(
-                        locationConverter.convertTemplateToObjects(
-                            location,
-                            objectTypeId
-                        ),
-                        grant
-                ));
-
-        metaModelService.saveParams(
-                locationConverter.convertTemplateToParams(
-                    location,
-                    objectTypeId,
-                    metaModelService.getAttrsMap(objectTypeId, grant)
-                ),
-                grant
-        );
-
-        getLocationCache(grant).put(location);
-    }
-
-    @Override
-    public void update(Location location, Integer grant) {
-        metaModelService.updateObject(
-                locationConverter.convertTemplateToObjects(
-                        location,
-                        objectType.getTypeId()
-                ),
-                grant);
-
-        metaModelService.updateParams(
-                locationConverter.convertTemplateToParams(
-                        location,
-                        objectType.getTypeId(),
-                        metaModelService.getAttrsMap(objectType.getTypeId(), grant)
-                ),
-                grant);
-
-        getLocationCache(grant).put(location);
-    }
-
-    @Override
-    public void delete(Integer locationId, Integer grant) {
-        metaModelService.deleteParamsByObjectId(locationId, grant);
-        metaModelService.deleteObjectById(locationId, grant);
-
-        getLocationCache(grant).delete(locationId);
-    }
-
-    private Location getFromCache(Objects object, Integer grant){
-        LocationCache locationCache = getLocationCache(grant);
-        Location location = locationCache.getByObject(object, grant);
-
-        return location;
-    }
-
-    private LocationCache getLocationCache(Integer grant) {
-        LocationCache locationCache = grantCacheMap.get(grant);
-
-        if (locationCache == null)
-            grantCacheMap.put(grant, new LocationCache());
-
-        return grantCacheMap.get(grant);
-    }
-
-    class LocationCache {
-
-        private LoadingCache<Integer, Location> cache;
-        private Objects object;
-        private Integer grant;
-
-        public LocationCache() {
-            cache = CacheBuilder.newBuilder()
-                    .maximumSize(100)                             // maximum 100 records can be cached
-                    .expireAfterAccess(5, TimeUnit.MINUTES)      // cache will expire after 30 minutes of access
-                    .build(new CacheLoader<Integer, Location>() {  // build the cacheloader
-
-                        @Override
-                        public Location load(Integer locId) throws Exception {
-                            return locationConverter.convertDataToTemplate(
-                                    object,
-                                    metaModelService.getParamsMap(locId, grant),
-                                    Location.class);
-                        }
-                    });
+    protected void deleteFromCache(Integer locationId) {
+        for (Integer key : grantCacheMap.keySet()) {
+            Cache<Location> cache = grantCacheMap.get(key);
+            cache.delete(locationId);
         }
+    }
 
-        Location getByObject(Objects object, Integer grant){
-            try {
-                this.object = object;
-                this.grant = grant;
-                return cache.get(object.getObjectId());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            return new Location();
-        }
+    private Cache<Location> getCache(Role role) {
+        if (!grantCacheMap.containsKey(role.getRoleId()))
+            grantCacheMap.put(role.getRoleId(), new Cache<>(converter, paramsMapperService, Location.class));
 
-        void put(Location location) {
-            cache.put(location.getObjectId(), location);
-        }
-
-        void delete(Integer locationId) {
-            cache.invalidate(locationId);
-        }
+        return grantCacheMap.get(role.getRoleId());
     }
 
 }

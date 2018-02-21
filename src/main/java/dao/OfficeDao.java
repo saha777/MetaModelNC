@@ -1,21 +1,22 @@
 package dao;
 
 import entities.Office;
+import metamodel.dao.models.Role;
 
 import java.util.List;
 
 public interface OfficeDao {
 
-    List<Office> findAll(Integer grant);
+    List<Office> findAll(Role role);
 
-    List<Office> findByLocationId(Integer locationId, Integer grant);
+    List<Office> findByParentId(Integer locationId, Role role);
 
-    Office findById(Integer id, Integer grant);
+    Office findById(Integer id, Role role);
 
-    void save(Office office, Integer grant);
+    Integer save(Office office, Role role);
 
-    void update(Office office, Integer grant);
+    void update(Office office, Role role);
 
-    void delete(Integer officeId, Integer grant);
+    void delete(Integer officeId, Role role);
 
 }

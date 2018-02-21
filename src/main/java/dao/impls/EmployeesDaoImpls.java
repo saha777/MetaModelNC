@@ -1,167 +1,64 @@
 package dao.impls;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import dao.AbstractDao;
 import dao.EmployeesDao;
+import dao.cache.Cache;
+import dao.converter.impls.ConverterImpl;
 import entities.ObjectType;
 import dao.converter.Converter;
-import metamodel.dao.models.ObjectTypes;
-import metamodel.dao.models.Objects;
-import metamodel.dao.models.Params;
+import metamodel.dao.models.*;
 import entities.Employee;
+import metamodel.dao.models.Objects;
+import metamodel.mapper.AttrsMapperService;
+import metamodel.mapper.ParamsMapperService;
 import metamodel.service.MetaModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class EmployeesDaoImpls implements EmployeesDao{
-    private static Map<Integer, EmployeeCache> grantCacheMap = new HashMap<>(10);
-
-    private ObjectTypes objectType;
-
-    private MetaModelService metaModelService;
-    private Converter<Employee> employeeConverter;
+public class EmployeesDaoImpls extends AbstractDao<Employee> implements EmployeesDao{
+    private static Map<Integer, Cache<Employee>> grantCacheMap = new ConcurrentHashMap<>(10);
 
     @Autowired
-    public EmployeesDaoImpls(MetaModelService metaModelService, Converter<Employee> employeeConverter) {
-        this.metaModelService = metaModelService;
-        this.employeeConverter = employeeConverter;
-        objectType = metaModelService.findObjectTypeByTypeName(ObjectType.EMPLOYEE.toString());
+    public EmployeesDaoImpls(
+            MetaModelService metaModelService,
+            AttrsMapperService attrsMapperService,
+            ParamsMapperService paramsMapperService) {
+        super(metaModelService, attrsMapperService, paramsMapperService, ObjectType.EMPLOYEE);
     }
 
     @Override
-    public List<Employee> findAll(Integer grant) {
-        List<Objects> objects = metaModelService.findObjectsByTypeName(objectType.getName(), grant);
-        List<Employee> employees = new ArrayList<>();
-
-        for(Objects object : objects){
-            employees.add(checkEmployeeInCache(object, grant));
-        }
-
-        return employees;
+    protected Integer getObjId(Employee temp) {
+        return temp.getObjectId();
     }
 
     @Override
-    public List<Employee> findByDepartmentId(Integer departmentId, Integer grant) {
-        List<Objects> objects = metaModelService.findObjectsByParentId(departmentId, grant);
-        List<Employee> employees = new ArrayList<>();
-
-        for(Objects object : objects){
-            employees.add(checkEmployeeInCache(object, grant));
-        }
-
-        return employees;
-    }
-
-
-    @Override
-    public Employee findById(Integer id, Integer grant) {
-        return checkEmployeeInCache(metaModelService.findObjectByObjectId(id, grant), grant);
+    protected Employee insertIdIntoTemplate(Employee temp, Integer id) {
+        temp.setObjectId(id);
+        return temp;
     }
 
     @Override
-    public void save(Employee employee, Integer grant) {
-        Integer objectTypeId = metaModelService.findObjectTypeByTypeName(objectType.getName()).getTypeId();
+    protected Employee checkInCache(Objects object, Role role) {
+        if (object == null) return null;
 
-        Objects object = employeeConverter.convertTemplateToObjects(employee, objectTypeId);
-
-        List<Params> params = employeeConverter.convertTemplateToParams(
-                employee,
-                objectTypeId,
-                metaModelService.getAttrsMap(objectTypeId, grant));
-
-        metaModelService.saveObject(object, grant);
-        metaModelService.saveParams(params, grant);
-
-        getEmployeeCache(grant).put(employee);
+        Cache<Employee> cache = getCache(role);
+        return cache.getByObject(object, role);
     }
 
     @Override
-    public void update(Employee employee, Integer grant) {
-        Integer objectTypeId = metaModelService.findObjectTypeByTypeName(objectType.getName()).getTypeId();
-
-        Objects object = employeeConverter.convertTemplateToObjects(employee, objectTypeId);
-
-        List<Params> params = employeeConverter.convertTemplateToParams(
-                employee,
-                objectTypeId,
-                metaModelService.getAttrsMap(objectTypeId, grant));
-
-        metaModelService.updateObject(object, grant);
-        metaModelService.updateParams(params, grant);
-
-        getEmployeeCache(grant).put(employee);
+    protected void deleteFromCache(Integer empId) {
+        for (Integer key : grantCacheMap.keySet()) {
+            Cache<Employee> cache = grantCacheMap.get(key);
+            cache.delete(empId);
+        }
     }
 
-    @Override
-    public void delete(Integer empId, Integer grant) {
-        metaModelService.deleteParamsByObjectId(empId, grant);
-        metaModelService.deleteObjectById(empId, grant);
+    private Cache<Employee> getCache(Role role) {
+        if (!grantCacheMap.containsKey(role.getRoleId()))
+            grantCacheMap.put(role.getRoleId(), new Cache<>(converter, paramsMapperService, Employee.class));
 
-        getEmployeeCache(grant).delete(empId);
-    }
-
-    private Employee checkEmployeeInCache(Objects object, Integer grant){
-        Employee employee = getEmployeeCache(grant).getByObject(object, grant);
-        return employee;
-    }
-
-    private EmployeeCache getEmployeeCache(Integer grant) {
-        EmployeeCache departmentCache = grantCacheMap.get(grant);
-
-        if (departmentCache == null)
-            grantCacheMap.put(grant, new EmployeeCache());
-
-        return grantCacheMap.get(grant);
-    }
-
-
-    class EmployeeCache {
-
-        private LoadingCache<Integer, Employee> cache;
-        private Objects object;
-        private Integer grant;
-
-        public EmployeeCache() {
-            cache = CacheBuilder.newBuilder()
-                    .maximumSize(100)                             // maximum 100 records can be cached
-                    .expireAfterAccess(5, TimeUnit.MINUTES)      // cache will expire after 5 minutes of access
-                    .build(new CacheLoader<Integer, Employee>() {  // build the cacheloader
-                        @Override
-                        public Employee load(Integer deptId) throws Exception {
-                            return employeeConverter.convertDataToTemplate(
-                                    object,
-                                    metaModelService.getParamsMap(deptId, grant),
-                                    Employee.class);
-                        }
-                    });
-        }
-
-        public Employee getByObject(Objects object, Integer grant){
-            try {
-                this.object = object;
-                this.grant = grant;
-                return cache.get(object.getObjectId());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            return new Employee();
-        }
-
-        void put(Employee employee) {
-            cache.put(employee.getObjectId(), employee);
-        }
-
-        void delete(Integer empId) {
-            cache.invalidate(empId);
-        }
+        return grantCacheMap.get(role.getRoleId());
     }
 }

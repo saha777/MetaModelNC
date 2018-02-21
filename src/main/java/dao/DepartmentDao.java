@@ -1,21 +1,20 @@
 package dao;
 
 import entities.Department;
+import metamodel.dao.models.Role;
 
 import java.util.List;
 
 public interface DepartmentDao {
+    List<Department> findAll(Role role);
 
-    List<Department> findAll(Integer grant);
+    List<Department> findByParentId(Integer officeId, Role role);
 
-    List<Department> findByOfficeId(Integer officeId, Integer grant);
+    Department findById(Integer id, Role role);
 
-    Department findById(Integer id, Integer grant);
+    Integer save(Department department, Role role);
 
-    void save(Department department, Integer grant);
+    void update(Department department, Role role);
 
-    void update(Department department, Integer grant);
-
-    void delete(Integer departmentId, Integer grant);
-
+    void delete(Integer departmentId, Role role);
 }
