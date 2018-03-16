@@ -1,13 +1,20 @@
 package entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import entities.anotations.*;
+import entities.mappers.MetaObject;
+import entities.mappers.ObjectMapper;
+import entities.mappers.impls.EmployeeMapper;
+import metamodel.dao.models.Objects;
+import metamodel.dao.models.Params;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @EntityType(type = ObjectType.EMPLOYEE)
-public class Employee {
+public class Employee extends AbstractObject{
     @ObjectId
     private Integer objectId;
 
@@ -32,6 +39,7 @@ public class Employee {
     @JsonFormat(pattern="dd.MM.yyyy")
     @Param(name = "Hiredate", type = Type.DATE)
     private Date hiredate;
+
 //    @Param(name = "Task", type = Type.NUMBER, count = Count.MANY)
 //    private List<Integer> tasks;
 
@@ -41,6 +49,7 @@ public class Employee {
 
     public void setObjectId(Integer objectId) {
         this.objectId = objectId;
+        this.metaObject.setObjectId(objectId);
     }
 
     public Integer getParentId() {
@@ -49,6 +58,7 @@ public class Employee {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+        this.metaObject.setParentObjectId(parentId);
     }
 
     public String getName() {
@@ -57,6 +67,7 @@ public class Employee {
 
     public void setName(String name) {
         this.name = name;
+        this.metaObject.setName(name);
     }
 
     public String getSpeciality() {
@@ -65,6 +76,7 @@ public class Employee {
 
     public void setSpeciality(String speciality) {
         this.speciality = speciality;
+        this.metaObject.setTextAttr(EmployeeMapper.SPECIALITY_FIELD, speciality);
     }
 
     public Integer getExperience() {
@@ -73,6 +85,7 @@ public class Employee {
 
     public void setExperience(Integer experience) {
         this.experience = experience;
+        this.metaObject.setNumberAttr(EmployeeMapper.EXPERIENCE_FIELD, experience);
     }
 
     public Integer getAge() {
@@ -81,6 +94,7 @@ public class Employee {
 
     public void setAge(Integer age) {
         this.age = age;
+        this.metaObject.setNumberAttr(EmployeeMapper.AGE_FIELD, age);
     }
 
     public Integer getSalary() {
@@ -89,6 +103,7 @@ public class Employee {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
+        this.metaObject.setNumberAttr(EmployeeMapper.SALARY_FIELD, salary);
     }
 
     public Date getHiredate() {
@@ -97,9 +112,10 @@ public class Employee {
 
     public void setHiredate(Date hiredate) {
         this.hiredate = hiredate;
+        this.metaObject.setDateAttr(EmployeeMapper.HIREDATE_FIELD, hiredate);
     }
 
-    //    public List<Integer> getTasks() {
+//    public List<Integer> getTasks() {
 //        return tasks;
 //    }
 //
@@ -121,4 +137,6 @@ public class Employee {
                 ", hiredate=" + hiredate +
                 '}';
     }
+
+
 }

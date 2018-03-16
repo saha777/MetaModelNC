@@ -7,15 +7,15 @@ import metamodel.dao.models.Role;
 import java.util.List;
 
 public interface EmployeesDao {
-    List<Employee> findAll(Role role);
+    List<Employee> findAll();
 
-    List<Employee> findByParentId(Integer departmentId, Role role);
+    List<Employee> findByParentId(Integer departmentId);
 
-    Employee findById(Integer id, Role role);
+    Employee findById(Integer id);
 
-    Integer save(Employee employee, Role role);
+    Integer save(Employee employee);
 
-    void update(Employee employee, Role role);
+    void update(Employee employee);
 
-    void delete(Integer empId, Role role);
+    void delete(Integer empId);
 }
