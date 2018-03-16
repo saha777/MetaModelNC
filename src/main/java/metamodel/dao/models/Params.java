@@ -10,6 +10,7 @@ public class Params {
     private String textValue;
     private Integer numberValue;
     private Date dateValue;
+    private String attrName;
 
     public Params() {
     }
@@ -75,6 +76,14 @@ public class Params {
     public Params setDateValue(Date dateValue) {
         this.dateValue = dateValue;
         return this;
+    }
+
+    public String getAttrName() {
+        return attrName;
+    }
+
+    public void setAttrName(String attrName) {
+        this.attrName = attrName;
     }
 
     @Override

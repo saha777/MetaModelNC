@@ -18,6 +18,7 @@ public class ParamsMapper implements RowMapper<Params> {
         params.setTextValue(resultSet.getString("text_value"));
         params.setNumberValue(resultSet.getInt("number_value"));
         params.setDateValue(resultSet.getDate("date_value"));
+        params.setAttrName(resultSet.getString("attr_name"));
         return params;
     }
 }

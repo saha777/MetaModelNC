@@ -43,7 +43,8 @@ public class MainController {
         Role role = (Role) session.getAttribute("role");
 
         if (role == null) {
-            session.setAttribute("grant", grantsDao.findByName("user"));
+            role = grantsDao.findByName("user");
+            session.setAttribute("grant", role);
         }
 
         return role;

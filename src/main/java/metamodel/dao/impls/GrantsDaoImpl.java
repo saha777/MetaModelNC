@@ -98,14 +98,14 @@ public class GrantsDaoImpl implements GrantsDao {
     private Boolean isAvailable(Role role, Integer objId, Boolean read) {
         String typeQuery = "SELECT g.R, g.W " +
                 "FROM GRANTS g INNER JOIN (" +
-                "SELECT OBJECT_TYPE_ID, NAME, LEVEL RANG " +
-                "FROM OBJECT_TYPES " +
-                "START WITH OBJECT_TYPES.OBJECT_TYPE_ID = (" +
-                "SELECT OBJECT_TYPE_ID " +
-                "FROM OBJECTS " +
-                "WHERE OBJECT_ID = " + objId + ")" +
-                "CONNECT BY PRIOR PAR_TYPE_ID = OBJECT_TYPE_ID " +
-                "ORDER BY LEVEL) t " +
+                    "SELECT OBJECT_TYPE_ID, NAME, LEVEL RANG " +
+                    "FROM OBJECT_TYPES " +
+                    "START WITH OBJECT_TYPES.OBJECT_TYPE_ID = (" +
+                        "SELECT OBJECT_TYPE_ID " +
+                        "FROM OBJECTS " +
+                        "WHERE OBJECT_ID = " + objId + ")" +
+                    "CONNECT BY PRIOR PAR_TYPE_ID = OBJECT_TYPE_ID " +
+                    "ORDER BY LEVEL) t " +
                 "ON g.OBJECT_TYPE_ID = t.OBJECT_TYPE_ID " +
                 "WHERE ROWNUM <= 1 AND g.ROLE_ID = " + role.getRoleId();
         Grants typeGrant;

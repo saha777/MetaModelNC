@@ -62,10 +62,16 @@ public class EmployeesController {
             @PathVariable Integer employeeId,
             HttpServletRequest httpServletRequest) {
         Role role = MainController.getGrant(grantsDao, httpServletRequest);
+
+        if(!grantsDao.isWritableObj(role, employeeId)) return "redirect:/" + employeeId;
+
         Employee employee = employeesDao.findById(employeeId, role);
 
         model.addAttribute("grant", role);
         model.addAttribute("employee", employee);
+
+
+
         return "updateEmp";
     }
 

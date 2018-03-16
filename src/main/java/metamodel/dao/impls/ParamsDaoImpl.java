@@ -34,7 +34,9 @@ public class ParamsDaoImpl implements ParamsDao{
 
     @Override
     public List<Params> findByObjects(Integer objectId) {
-        String query = "SELECT * FROM PARAMS WHERE OBJECT_ID = '" + objectId + "'";
+        String query = "SELECT p.OBJECT_ID, a.ATTR_ID, a.NAME AS ATTR_NAME, p.TEXT_VALUE, p.NUMBER_VALUE, p.DATE_VALUE, p.RELATION_ID, p.DESCRIPTION " +
+                "FROM PARAMS p LEFT JOIN ATTRS a ON p.ATTR_ID = a.ATTR_ID " +
+                "WHERE p.OBJECT_ID = '" + objectId + "'";
         return jdbcTemplate.query(query, new ParamsMapper());
     }
 

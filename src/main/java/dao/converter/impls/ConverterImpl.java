@@ -117,6 +117,7 @@ public class ConverterImpl<T> implements Converter<T> {
 
                 field.setAccessible(accessible);
             }
+
             return  (T) template;
 
         } catch (InstantiationException e) {

@@ -36,13 +36,13 @@ public class ParamsMapperServiceImpl implements ParamsMapperService {
 
             if (!grantsDao.isReadableAttr(role, objectId, param.getAttrId())) continue;
 
-            Attrs attr = attrsDao.findById(param.getAttrId());
+            //Attrs attr = attrsDao.findById(param.getAttrId());
 
-            if (paramsMap.containsKey(attr.getName())) {
+            if (paramsMap.containsKey(param.getAttrName())) {
 
-                Object temp = paramsMap.get(attr.getName());
+                Object temp = paramsMap.get(param.getAttrName());
 
-                List<Params> paramValues = null;
+                List<Params> paramValues;
 
                 if (temp instanceof List) {
                     paramValues = (List<Params>) temp;
@@ -52,12 +52,12 @@ public class ParamsMapperServiceImpl implements ParamsMapperService {
                 }
 
                 paramValues.add(param);
-                paramsMap.put(attr.getName(), paramValues);
+                paramsMap.put(param.getAttrName(), paramValues);
 
                 continue;
             }
 
-            paramsMap.put(attr.getName(), param);
+            paramsMap.put(param.getAttrName(), param);
         }
 
         return paramsMap;

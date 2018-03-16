@@ -5,12 +5,21 @@
     <title>Update Employee</title>
 </head>
 <body>
-    <h1>${employee.name}</h1>
-    <p>ID : ${employee.objectId}</p>
-    <p>Speciality : ${employee.speciality}</p>
-    <p>Experience : ${employee.experience}</p>
-    <p>Age : ${employee.age}</p>
-
+    <#if employee.name??>
+        <h1>${employee.name}</h1>
+    </#if>
+    <#if employee.objectId??>
+        <p>ID : ${employee.objectId}</p>
+    </#if>
+    <#if employee.speciality??>
+        <p>Speciality : ${employee.speciality}</p>
+    </#if>
+    <#if employee.experience??>
+        <p>Experience : ${employee.experience}</p>
+    </#if>
+    <#if employee.age??>
+        <p>Age : ${employee.age}</p>
+    </#if>
     <#if employee.salary??>
         <p>Salary : ${employee.salary}</p>
     </#if>
