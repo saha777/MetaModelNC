@@ -1,54 +1,58 @@
 package dao;
 
 import dao.cache.Cache;
-import dao.converter.Converter;
-import dao.converter.impls.ConverterImpl;
-import entities.ObjectType;
-import metamodel.dao.models.*;
+import entities.AbstractObject;
+import entities.mappers.MetaObject;
+import entities.mappers.ObjectMapper;
+import metamodel.dao.models.ObjectTypes;
 import metamodel.dao.models.Objects;
+import metamodel.dao.models.Params;
 import metamodel.mapper.AttrsMapperService;
 import metamodel.mapper.ParamsMapperService;
 import metamodel.service.MetaModelService;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class AbstractDao<T> {
+public abstract class AbstractDao<T extends AbstractObject> implements Dao<T> {
     protected ObjectTypes objectType;
+
+    protected Cache<T> cache;
+    protected ObjectMapper<T> mapper;
 
     protected MetaModelService metaModelService;
     protected AttrsMapperService attrsMapperService;
     protected ParamsMapperService paramsMapperService;
-    protected Converter<T> converter;
 
-    @Autowired
-    public AbstractDao(
-            MetaModelService metaModelService,
-            AttrsMapperService attrsMapperService,
-            ParamsMapperService paramsMapperService,
-            ObjectType type) {
+    public AbstractDao(ObjectTypes objectType,
+                       ObjectMapper<T> mapper,
+                       MetaModelService metaModelService,
+                       AttrsMapperService attrsMapperService,
+                       ParamsMapperService paramsMapperService) {
+        this.objectType = objectType;
+        this.mapper = mapper;
         this.metaModelService = metaModelService;
         this.attrsMapperService = attrsMapperService;
         this.paramsMapperService = paramsMapperService;
-        this.converter = new ConverterImpl<>();
-        objectType = metaModelService.findObjectTypeByTypeName(type.toString());
     }
 
-    public List<T> findAll(Role role) {
-        List<Objects> objects = metaModelService.findObjectsByTypeId(objectType.getTypeId(), role);
-        return this.listSelection(objects, role);
+    @Override
+    public List<T> findAll() {
+        List<Objects> objects = metaModelService.findObjectsByTypeId(objectType.getTypeId());
+        return listSelection(objects);
     }
 
-    public List<T> findByParentId(Integer parentId, Role role) {
-        List<Objects> objects = metaModelService.findObjectsByParentId(parentId, role);
-        return this.listSelection(objects, role);
+    @Override
+    public List<T> findByParentId(Integer departmentId) {
+        List<Objects> objects = metaModelService.findObjectsByParentId(departmentId);
+        return listSelection(objects);
     }
 
-    private List<T> listSelection(List<Objects> objects, Role role) {
+    private List<T> listSelection(List<Objects> objects) {
         List<T> templates = new ArrayList<>();
 
         for (Objects object : objects) {
-            T temp = checkInCache(object, role);
+            T temp = checkInCache(object);
             if(temp == null) continue;
             templates.add(temp);
         }
@@ -56,51 +60,39 @@ public abstract class AbstractDao<T> {
         return templates;
     }
 
-    public T findById(Integer id, Role role) {
-        Objects object = metaModelService.findObjectByObjectId(id, role);
+    @Override
+    public T findById(Integer id) {
+        Objects object = metaModelService.findObjectByObjectId(id);
 
         if (object == null) return null;
 
-        return this.checkInCache(object, role);
+        return this.checkInCache(object);
     }
 
-    public Integer save(T temp, Role role) {
-        Integer objectTypeId = objectType.getTypeId();
+    @Override
+    public void update(T temp) {
+        MetaObject metaObject = temp.getMetaObject();
 
-        Objects object = converter.convertTemplateToObjects(temp, objectTypeId);
-        Integer objectId = metaModelService.saveObject(object, role);
+        if (!metaObject.isChanged()) return;
 
-        temp = insertIdIntoTemplate(temp, objectId);
+        Objects object = metaObject.getObject();
+        metaModelService.updateObject(object);
 
-        Map<String, Attrs> attrsMap = attrsMapperService.getAttrsMap(objectTypeId);
-        List<Params> params = converter.convertTemplateToParams(temp, objectTypeId, attrsMap);
-        metaModelService.saveParams(params, role);
+        List<Params> params = new ArrayList<>(metaObject.getParamsMap().values());
+        metaModelService.updateParams(params);
 
-        return objectId;
+        getCache().delete(object.getObjectId());
     }
 
-    public void update(T temp, Role role) {
-        Integer objectTypeId = objectType.getTypeId();
+    private T checkInCache(Objects object) {
+        if (object == null) return null;
 
-        Objects object = converter.convertTemplateToObjects(temp, objectTypeId);
-        metaModelService.updateObject(object, role);
-
-        Map<String, Attrs> attrsMap = attrsMapperService.getAttrsMap(objectTypeId);
-        List<Params> params = converter.convertTemplateToParams(temp, objectTypeId, attrsMap);
-        metaModelService.updateParams(params, role);
-
-        this.deleteFromCache(getObjId(temp));
+        return getCache().getByObject(object);
     }
 
-    public void delete(Integer objId, Role role) {
-        metaModelService.deleteParamsByObjectId(objId, role);
-        metaModelService.deleteObjectById(objId, role);
-
-        this.deleteFromCache(objId);
+    private Cache<T> getCache() {
+        if (cache == null)
+            cache = new Cache<>(mapper, paramsMapperService);
+        return cache;
     }
-
-    protected abstract Integer getObjId(T temp);
-    protected abstract T insertIdIntoTemplate(T temp, Integer id);
-    protected abstract T checkInCache(Objects object, Role role);
-    protected abstract void deleteFromCache(Integer objId);
 }

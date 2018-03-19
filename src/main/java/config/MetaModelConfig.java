@@ -61,7 +61,7 @@ public class MetaModelConfig {
 
     @Bean
     public MetaModelService getMetaModelService() {
-        return new MetaModelServiceImpl(getAttrsDao(), getParamsDao(), getObjectTypesDao(), getObjectsDao(), getGrantsDao());
+        return new MetaModelServiceImpl(getAttrsDao(), getParamsDao(), getObjectTypesDao(), getObjectsDao());
     }
 
     @Bean
@@ -71,6 +71,6 @@ public class MetaModelConfig {
 
     @Bean
     public ParamsMapperService getParamsMapperService() {
-        return new ParamsMapperServiceImpl(getParamsDao(), getAttrsDao(), getGrantsDao());
+        return new ParamsMapperServiceImpl(getParamsDao(), getGrantsDao());
     }
 }

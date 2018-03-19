@@ -1,43 +1,16 @@
 package service.impls;
 
-import dao.EmployeesDao;
+import dao.Dao;
 import entities.Employee;
+import entities.mappers.impls.EmployeeMapper;
 import metamodel.dao.GrantsDao;
-import metamodel.dao.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
-import service.EmployeesService;
+import service.AbstractService;
 
-import java.util.List;
-
-public class EmployeeServiceImpl implements EmployeesService {
-
-    private EmployeesDao employeesDao;
-    private GrantsDao grantsDao;
+public class EmployeeServiceImpl extends AbstractService<Employee> {
 
     @Autowired
-    public EmployeeServiceImpl(EmployeesDao employeesDao, GrantsDao grantsDao) {
-        this.employeesDao = employeesDao;
-        this.grantsDao = grantsDao;
-    }
-
-    @Override
-    public List<Employee> getAll(Role role) {
-        employeesDao.findAll();
-        return null;
-    }
-
-    @Override
-    public List<Employee> getByParentId(Role role, int parentId) {
-        return null;
-    }
-
-    @Override
-    public Employee get(Role role, int empId) {
-        return null;
-    }
-
-    @Override
-    public Employee update(Role role, Employee emp) {
-        return null;
+    public EmployeeServiceImpl(Dao<Employee> employeesDao, GrantsDao grantsDao) {
+        super(employeesDao, new EmployeeMapper(), grantsDao);
     }
 }

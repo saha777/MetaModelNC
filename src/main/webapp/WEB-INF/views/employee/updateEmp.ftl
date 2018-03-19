@@ -5,7 +5,7 @@
     <title>Update Employee</title>
 </head>
 <body>
-<form action="/employees/update" method="post" name="employee">
+<form action="/employees/update" method="post">
     <#if employee.objectId??>
         <p>ID : <input type="number" name="objectId" value="${employee.objectId}" readonly="readonly"></p>
     </#if>
@@ -15,9 +15,6 @@
     <#if employee.name??>
         <p>Name : <input type="text" name="name" value="${employee.name}" readonly="readonly"></p>
     </#if>
-    <#list user?keys as prop>
-        ${prop} = ${user.get(prop)}
-    </#list>
     <#if employee.speciality??>
         <p>Speciality : <input type="text" name="speciality" value="${employee.speciality}"></p>
     </#if>

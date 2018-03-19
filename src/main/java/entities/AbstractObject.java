@@ -3,7 +3,7 @@ package entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import entities.mappers.MetaObject;
 
-public class AbstractObject {
+public abstract class AbstractObject {
     @JsonIgnore
     protected transient MetaObject metaObject;
 
@@ -14,4 +14,5 @@ public class AbstractObject {
     public void setMetaObject(MetaObject metaObject) {
         this.metaObject = metaObject;
     }
+
 }

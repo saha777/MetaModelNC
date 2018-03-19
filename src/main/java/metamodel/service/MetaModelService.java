@@ -4,27 +4,27 @@ import metamodel.dao.models.*;
 import java.util.List;
 
 public interface MetaModelService {
-    List<Objects> findObjectsByTypeId(Integer typeId, Role role);
+    List<Objects> findObjectsByTypeId(Integer typeId);
 
-    List<Objects> findObjectsByTypeName(String typeName, Role role);
+    List<Objects> findObjectsByTypeName(String typeName);
 
-    List<Objects> findObjectsByParentId(Integer parentId, Role role);
+    List<Objects> findObjectsByParentId(Integer parentId);
 
-    Objects findObjectByObjectId(Integer objectId, Role role);
+    Objects findObjectByObjectId(Integer objectId);
 
     ObjectTypes findObjectTypeByTypeName(String typeName);
 
-    Integer saveObject(Objects object, Role role);
+    Integer saveObject(Objects object);
 
-    void saveParams(List<Params> params, Role role);
+    void saveParams(List<Params> params);
 
-    void updateObject(Objects object, Role role);
+    void updateObject(Objects object);
 
-    void updateParams(List<Params> params, Role role);
+    void updateParams(List<Params> params);
 
-    void updateParams(Params param, Role role);
+    void updateParams(Params param);
 
-    void deleteParamsByObjectId(Integer objectId, Role role);
+    void deleteParamsByObjectId(Integer objectId);
 
-    void deleteObjectById(Integer objectId, Role role);
+    void deleteObjectById(Integer objectId);
 }

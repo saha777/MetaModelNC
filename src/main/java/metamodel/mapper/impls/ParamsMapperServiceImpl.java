@@ -16,13 +16,11 @@ import java.util.Map;
 
 public class ParamsMapperServiceImpl implements ParamsMapperService {
     private ParamsDao paramsDao;
-    private AttrsDao attrsDao;
     private GrantsDao grantsDao;
 
     @Autowired
-    public ParamsMapperServiceImpl(ParamsDao paramsDao, AttrsDao attrsDao, GrantsDao grantsDao) {
+    public ParamsMapperServiceImpl(ParamsDao paramsDao, GrantsDao grantsDao) {
         this.paramsDao = paramsDao;
-        this.attrsDao = attrsDao;
         this.grantsDao = grantsDao;
     }
 
@@ -34,7 +32,7 @@ public class ParamsMapperServiceImpl implements ParamsMapperService {
 
         for (Params param : params) {
 
-            if (!grantsDao.isReadableAttr(role, objectId, param.getAttrId())) continue;
+            if (!grantsDao.isReadableAttr(role, param.getAttrId())) continue;
 
             //Attrs attr = attrsDao.findById(param.getAttrId());
 
@@ -56,6 +54,38 @@ public class ParamsMapperServiceImpl implements ParamsMapperService {
 
                 continue;
             }
+
+            paramsMap.put(param.getAttrName(), param);
+        }
+
+        return paramsMap;
+    }
+
+    @Override
+    public Map<String, Params> getParamsMap(Integer objectId) {
+        List<Params> params = paramsDao.findByObjects(objectId);
+        Map<String, Params> paramsMap = new HashMap<>();
+
+        for (Params param : params) {
+
+//            if (paramsMap.containsKey(param.getAttrName())) {
+//
+//                Object temp = paramsMap.get(param.getAttrName());
+//
+//                List<Params> paramValues;
+//
+//                if (temp instanceof List) {
+//                    paramValues = (List<Params>) temp;
+//                } else {
+//                    paramValues = new ArrayList<>();
+//                    paramValues.add((Params) temp);
+//                }
+//
+//                paramValues.add(param);
+//                paramsMap.put(param.getAttrName(), paramValues);
+//
+//                continue;
+//            }
 
             paramsMap.put(param.getAttrName(), param);
         }

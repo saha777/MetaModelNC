@@ -1,47 +1,21 @@
 package entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import entities.anotations.*;
-import entities.mappers.MetaObject;
-import entities.mappers.ObjectMapper;
 import entities.mappers.impls.EmployeeMapper;
-import metamodel.dao.models.Objects;
-import metamodel.dao.models.Params;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-@EntityType(type = ObjectType.EMPLOYEE)
 public class Employee extends AbstractObject{
-    @ObjectId
     private Integer objectId;
-
-    @ParentId
     private Integer parentId;
-
-    @Name
     private String name;
-
-    @Param(name = "Speciality", type = Type.TEXT)
     private String speciality;
-
-    @Param(name = "Experience", type = Type.NUMBER)
     private Integer experience;
-
-    @Param(name = "Age", type = Type.NUMBER)
     private Integer age;
-
-    @Param(name = "Salary", type = Type.NUMBER)
     private Integer salary;
 
     @JsonFormat(pattern="dd.MM.yyyy")
-    @Param(name = "Hiredate", type = Type.DATE)
     private Date hiredate;
-
-//    @Param(name = "Task", type = Type.NUMBER, count = Count.MANY)
-//    private List<Integer> tasks;
 
     public Integer getObjectId() {
         return objectId;
@@ -115,15 +89,6 @@ public class Employee extends AbstractObject{
         this.metaObject.setDateAttr(EmployeeMapper.HIREDATE_FIELD, hiredate);
     }
 
-//    public List<Integer> getTasks() {
-//        return tasks;
-//    }
-//
-//    public void setTasks(List<Integer> tasks) {
-//        this.tasks = tasks;
-//    }
-
-
     @Override
     public String toString() {
         return "Employee{" +
@@ -137,6 +102,4 @@ public class Employee extends AbstractObject{
                 ", hiredate=" + hiredate +
                 '}';
     }
-
-
 }

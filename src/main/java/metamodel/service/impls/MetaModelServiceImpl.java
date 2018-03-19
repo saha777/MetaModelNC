@@ -16,55 +16,37 @@ public class MetaModelServiceImpl implements MetaModelService {
     private ParamsDao paramsDao;
     private ObjectTypesDao objectTypesDao;
     private ObjectsDao objectsDao;
-    private GrantsDao grantsDao;
 
     @Autowired
     public MetaModelServiceImpl(
             AttrsDao attrsDao,
             ParamsDao paramsDao,
             ObjectTypesDao objectTypesDao,
-            ObjectsDao objectsDao,
-            GrantsDao grantsDao) {
+            ObjectsDao objectsDao) {
         this.attrsDao = attrsDao;
         this.paramsDao = paramsDao;
         this.objectTypesDao = objectTypesDao;
         this.objectsDao = objectsDao;
-        this.grantsDao = grantsDao;
     }
 
     @Override
-    public List<Objects> findObjectsByTypeId(Integer typeId, Role role) {
-        List<Objects> objects = objectsDao.findByType(typeId);
-        return checkObjectsGrants(objects, role);
+    public List<Objects> findObjectsByTypeId(Integer typeId) {
+        return objectsDao.findByType(typeId);
     }
 
     @Override
-    public List<Objects> findObjectsByTypeName(String typeName, Role role) {
+    public List<Objects> findObjectsByTypeName(String typeName) {
         ObjectTypes type = findObjectTypeByTypeName(typeName);
-        List<Objects> objects = objectsDao.findByType(type.getTypeId());
-        return checkObjectsGrants(objects, role);
+        return objectsDao.findByType(type.getTypeId());
     }
 
     @Override
-    public List<Objects> findObjectsByParentId(Integer parentId, Role role) {
-        List<Objects> objects = objectsDao.findByParentId(parentId);
-        return checkObjectsGrants(objects, role);
-    }
-
-    private List<Objects> checkObjectsGrants(List<Objects> objects, Role role) {
-        List<Objects> checkedObjects = new ArrayList<>();
-
-        for(Objects object : objects)
-            if(grantsDao.isReadableObj(role, object.getObjectId()))
-                checkedObjects.add(object);
-
-        return checkedObjects;
+    public List<Objects> findObjectsByParentId(Integer parentId) {
+        return objectsDao.findByParentId(parentId);
     }
 
     @Override
-    public Objects findObjectByObjectId(Integer objectId, Role role) {
-        if (!grantsDao.isReadableObj(role, objectId)) return null;
-
+    public Objects findObjectByObjectId(Integer objectId) {
         return objectsDao.findById(objectId);
     }
 
@@ -74,39 +56,38 @@ public class MetaModelServiceImpl implements MetaModelService {
     }
 
     @Override
-    public Integer saveObject(Objects object, Role role) {
+    public Integer saveObject(Objects object) {
         return objectsDao.save(object);
     }
 
     @Override
-    public void saveParams(List<Params> params, Role role) {
+    public void saveParams(List<Params> params) {
         paramsDao.save(params);
     }
 
     @Override
-    public void updateObject(Objects object, Role role) {
-        if(grantsDao.isWritableObj(role, object.getObjectId()))
-            objectsDao.update(object);
+    public void updateObject(Objects object) {
+        objectsDao.update(object);
     }
 
     @Override
-    public void updateParams(List<Params> params, Role role) {
+    public void updateParams(List<Params> params) {
         for (Params param : params)
-                this.updateParams(param, role);
+            this.updateParams(param);
     }
 
     @Override
-    public void updateParams(Params param, Role role) {
-        if(grantsDao.isWritableAttr(role, param.getObjectId(), param.getAttrId())) paramsDao.update(param);
+    public void updateParams(Params param) {
+        paramsDao.update(param);
     }
 
     @Override
-    public void deleteParamsByObjectId(Integer objectId, Role role) {
+    public void deleteParamsByObjectId(Integer objectId) {
         paramsDao.deleteByObjectId(objectId);
     }
 
     @Override
-    public void deleteObjectById(Integer objectId, Role role) {
+    public void deleteObjectById(Integer objectId) {
         objectsDao.deleteById(objectId);
     }
 }

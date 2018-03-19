@@ -1,20 +1,8 @@
 package entities;
 
-import entities.anotations.EntityType;
-import entities.anotations.Name;
-import entities.anotations.ObjectId;
-import entities.anotations.ParentId;
-
-@EntityType(type = ObjectType.LOCATION)
-public class Location {
-
-    @ObjectId
+public class Location extends AbstractObject {
     private Integer objectId;
-
-    @ParentId
     private Integer parentId;
-
-    @Name
     private String name;
 
     public Integer getObjectId() {
@@ -23,6 +11,7 @@ public class Location {
 
     public void setObjectId(Integer objectId) {
         this.objectId = objectId;
+        this.metaObject.setObjectId(objectId);
     }
 
     public Integer getParentId() {
@@ -31,6 +20,7 @@ public class Location {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+        this.metaObject.setParentObjectId(parentId);
     }
 
     public String getName() {
@@ -39,6 +29,7 @@ public class Location {
 
     public void setName(String name) {
         this.name = name;
+        this.metaObject.setName(name);
     }
 
     @Override

@@ -1,21 +1,9 @@
 package entities;
 
-import entities.anotations.EntityType;
-import entities.anotations.Name;
-import entities.anotations.ObjectId;
-import entities.anotations.ParentId;
-
-@EntityType(type = ObjectType.OFFICE)
-public class Office {
-
-    @ObjectId
-    private Integer objectId;
-
-    @ParentId
-    private Integer locationId;
-
-    @Name
-    private String name;
+public class Office extends AbstractObject {
+        private Integer objectId;
+        private Integer parentId;
+        private String name;
 
     public Integer getObjectId() {
         return objectId;
@@ -23,14 +11,16 @@ public class Office {
 
     public void setObjectId(Integer objectId) {
         this.objectId = objectId;
+        this.metaObject.setObjectId(objectId);
     }
 
-    public Integer getLocationId() {
-        return locationId;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+        this.metaObject.setParentObjectId(parentId);
     }
 
     public String getName() {
@@ -39,14 +29,15 @@ public class Office {
 
     public void setName(String name) {
         this.name = name;
+        this.metaObject.setName(name);
     }
 
-    @Override
-    public String toString() {
-        return "Office{" +
-                "objectId=" + objectId +
-                ", locationId=" + locationId +
-                ", name='" + name + '\'' +
-                '}';
-    }
+        @Override
+        public String toString() {
+            return "Office{" +
+                    "objectId=" + objectId +
+                    ", parentId=" + parentId +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
 }

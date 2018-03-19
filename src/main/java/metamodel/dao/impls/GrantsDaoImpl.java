@@ -57,26 +57,26 @@ public class GrantsDaoImpl implements GrantsDao {
 
     @Override
     public Boolean isReadableObj(Role role, Integer objId) {
-        return isAvailable(role, objId, true);
+        return isAvailableObj(role, objId, true);
     }
 
     @Override
     public Boolean isWritableObj(Role role, Integer objId) {
-        return isAvailable(role, objId, false);
+        return isAvailableObj(role, objId, false);
     }
 
     @Override
-    public Boolean isReadableAttr(Role role, Integer objId, Integer attrId) {
-        return isAvailable(role, objId, attrId, true);
+    public Boolean isReadableAttr(Role role, Integer attrId) {
+        return isAvailableAttr(role, attrId, true);
     }
 
     @Override
-    public Boolean isWritableAttr(Role role, Integer objId, Integer attrId) {
-        return isAvailable(role, objId, attrId, false);
+    public Boolean isWritableAttr(Role role, Integer attrId) {
+        return isAvailableAttr(role, attrId, false);
     }
 
-    private Boolean isAvailable(Role role, Integer objId, Integer attrId, Boolean read) {
-        Boolean objectGrant = isAvailable(role, objId, read);
+    private Boolean isAvailableAttr(Role role, Integer attrId, boolean read) {
+        //Boolean objectGrant = isAvailable(role, objId, read);
 
         String attrQuery = "SELECT R, W " +
                 "FROM GRANTS " +
@@ -88,46 +88,48 @@ public class GrantsDaoImpl implements GrantsDao {
         try {
             attrGrant = jdbcTemplate.queryForObject(attrQuery, new GrantsMapper());
         } catch (EmptyResultDataAccessException e) {
-            return objectGrant;
+            return null;
         }
 
-        if(read) return attrGrant.getR() && objectGrant;
-        return attrGrant.getW() && objectGrant;
+        if(read) return attrGrant.getR();
+        return attrGrant.getW();
+//        if(read) return attrGrant.getR() && objectGrant;
+//        return attrGrant.getW() && objectGrant;
     }
 
-    private Boolean isAvailable(Role role, Integer objId, Boolean read) {
+    private Boolean isAvailableObj(Role role, Integer objId, Boolean read) {
         String typeQuery = "SELECT g.R, g.W " +
                 "FROM GRANTS g INNER JOIN (" +
-                    "SELECT OBJECT_TYPE_ID, NAME, LEVEL RANG " +
+                    "SELECT OBJECT_TYPE_ID, LEVEL RANG " +
                     "FROM OBJECT_TYPES " +
                     "START WITH OBJECT_TYPES.OBJECT_TYPE_ID = (" +
                         "SELECT OBJECT_TYPE_ID " +
                         "FROM OBJECTS " +
                         "WHERE OBJECT_ID = " + objId + ")" +
-                    "CONNECT BY PRIOR PAR_TYPE_ID = OBJECT_TYPE_ID " +
-                    "ORDER BY LEVEL) t " +
+                    "CONNECT BY PRIOR PAR_TYPE_ID = OBJECT_TYPE_ID) t " +
                 "ON g.OBJECT_TYPE_ID = t.OBJECT_TYPE_ID " +
-                "WHERE ROWNUM <= 1 AND g.ROLE_ID = " + role.getRoleId();
+                "WHERE g.ROLE_ID = " + role.getRoleId() +
+                " ORDER BY t.RANG";
         Grants typeGrant;
 
         try {
-            typeGrant = jdbcTemplate.queryForObject(typeQuery, new GrantsMapper());
+            typeGrant = jdbcTemplate.query(typeQuery, new GrantsMapper()).get(0);
         } catch (EmptyResultDataAccessException e) {
             return false;
         }
 
         String objQuery = "SELECT R, W " +
                 "FROM GRANTS g INNER JOIN (" +
-                "SELECT OBJECTS.OBJECT_ID FROM OBJECTS " +
+                "SELECT OBJECTS.OBJECT_ID, LEVEL RANG FROM OBJECTS " +
                 "START WITH OBJECTS.OBJECT_ID = " + objId + " " +
-                "CONNECT BY PRIOR PAR_OBJ_ID = OBJECTS.OBJECT_ID " +
-                "ORDER BY LEVEL) ob " +
+                "CONNECT BY PRIOR PAR_OBJ_ID = OBJECTS.OBJECT_ID) ob " +
                 "ON g.OBJECT_ID = ob.OBJECT_ID " +
-                "WHERE ROWNUM <= 1 AND ROLE_ID = " + role.getRoleId();
+                "WHERE ROLE_ID = " + role.getRoleId() +
+                " ORDER BY ob.RANG";
         Grants objGrant;
 
         try {
-            objGrant = jdbcTemplate.queryForObject(objQuery, new GrantsMapper());
+            objGrant = jdbcTemplate.query(objQuery, new GrantsMapper()).get(0);
         } catch (EmptyResultDataAccessException e) {
             return false;
         }

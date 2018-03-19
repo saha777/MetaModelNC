@@ -1,25 +1,24 @@
 package dao.impls;
 
 import dao.AbstractDao;
-import entities.Employee;
+import entities.Department;
 import entities.ObjectType;
-import entities.Office;
+import entities.mappers.impls.DepartmentMapper;
 import entities.mappers.impls.EmployeeMapper;
-import entities.mappers.impls.OfficeMapper;
 import metamodel.mapper.AttrsMapperService;
 import metamodel.mapper.ParamsMapperService;
 import metamodel.service.MetaModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class OfficeDaoImpl extends AbstractDao<Office> {
+public class DepartmentDaoImpl extends AbstractDao<Department> {
     @Autowired
-    public OfficeDaoImpl(
+    public DepartmentDaoImpl(
             MetaModelService metaModelService,
             AttrsMapperService attrsMapperService,
             ParamsMapperService paramsMapperService) {
         super(metaModelService.findObjectTypeByTypeName(
-                ObjectType.OFFICE.toString()),
-                new OfficeMapper(),
+                ObjectType.DEPARTMENT.toString()),
+                new DepartmentMapper(),
                 metaModelService,
                 attrsMapperService,
                 paramsMapperService);

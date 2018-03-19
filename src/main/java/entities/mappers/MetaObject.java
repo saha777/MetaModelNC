@@ -1,6 +1,5 @@
 package entities.mappers;
 
-import entities.anotations.Type;
 import metamodel.dao.models.Objects;
 import metamodel.dao.models.Params;
 
@@ -10,10 +9,19 @@ import java.util.Map;
 public class MetaObject {
     private Objects object;
     private Map<String, Params> paramsMap;
+    private boolean isChanged = false;
 
     public MetaObject(Objects object, Map<String, Params> paramsMap) {
         this.object = object;
         this.paramsMap = paramsMap;
+    }
+
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public void setChanged() {
+        isChanged = true;
     }
 
     public Objects getObject() {
@@ -38,6 +46,7 @@ public class MetaObject {
 
     public void setObjectId(Integer objectId) {
         this.object.setObjectId(objectId);
+        setChanged();
     }
 
     public Integer getParentObjectId() {
@@ -46,6 +55,7 @@ public class MetaObject {
 
     public void setParentObjectId(Integer parentObjectId) {
         this.object.setParentObjectId(parentObjectId);
+        setChanged();
     }
 
     public String getName() {
@@ -54,6 +64,7 @@ public class MetaObject {
 
     public void setName(String name) {
         this.object.setName(name);
+        setChanged();
     }
 
     public Params getAttr(String attrName) {
@@ -61,21 +72,20 @@ public class MetaObject {
     }
 
     public void setNumberAttr(String attrName, Integer value) {
-        Params param = paramsMap.get(attrName);
-        param.setNumberValue(value);
-        paramsMap.put(param.getAttrName(), param);
+        paramsMap.put(attrName,
+                paramsMap.get(attrName).setNumberValue(value));
+        setChanged();
     }
 
     public void setTextAttr(String attrName, String value) {
-        Params param = paramsMap.get(attrName);
-        param.setTextValue(value);
-        paramsMap.put(param.getAttrName(), param);
+        paramsMap.put(attrName,
+                paramsMap.get(attrName).setTextValue(value));
+        setChanged();
     }
 
     public void setDateAttr(String attrName, Date value) {
-        Params param = paramsMap.get(attrName);
-        param.setDateValue(value);
-        paramsMap.put(param.getAttrName(), param);
+        paramsMap.put(attrName,
+                paramsMap.get(attrName).setDateValue(value));
+        setChanged();
     }
-
 }

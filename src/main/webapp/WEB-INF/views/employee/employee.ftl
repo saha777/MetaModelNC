@@ -27,8 +27,9 @@
     <#if employee.hiredate??>
         <p>Hiredate : ${employee.hiredate}</p>
     </#if>
-    <a href="/employees/update/${employee.objectId}">Update</a><br>
-
+    <#if updatable>
+        <a href="/employees/update/${employee.objectId}">Update</a><br>
+    </#if>
     <a href="/employees/department/${employee.parentId}">Back</a>
 </body>
 </html>

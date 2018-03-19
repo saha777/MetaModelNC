@@ -1,19 +1,8 @@
 package entities;
 
-import entities.anotations.EntityType;
-import entities.anotations.Name;
-import entities.anotations.ObjectId;
-import entities.anotations.ParentId;
-
-@EntityType(type = ObjectType.DEPARTMENT)
-public class Department {
-    @ObjectId
+public class Department extends AbstractObject {
     private Integer objectId;
-
-    @ParentId
-    private Integer officeId;
-
-    @Name
+    private Integer parentId;
     private String name;
 
     public Integer getObjectId() {
@@ -22,14 +11,16 @@ public class Department {
 
     public void setObjectId(Integer objectId) {
         this.objectId = objectId;
+        this.metaObject.setObjectId(objectId);
     }
 
-    public Integer getOfficeId() {
-        return officeId;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setOfficeId(Integer officeId) {
-        this.officeId = officeId;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+        this.metaObject.setParentObjectId(parentId);
     }
 
     public String getName() {
@@ -38,13 +29,14 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+        this.metaObject.setName(name);
     }
 
     @Override
     public String toString() {
         return "Department{" +
                 "objectId=" + objectId +
-                ", officeId=" + officeId +
+                ", parentId=" + parentId +
                 ", name='" + name + '\'' +
                 '}';
     }

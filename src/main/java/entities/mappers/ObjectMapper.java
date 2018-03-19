@@ -9,5 +9,5 @@ import java.util.Map;
 public interface ObjectMapper<T> {
     T mapObject(Objects objects, Map<String, Params> paramsMap);
     T mapObject(MetaObject metaObject);
-    MetaObject getMetaObject(AbstractObject object);
+    T updateObject(T temp, Map<String, String[]> params);
 }

@@ -1,33 +1,27 @@
 package controller;
 
-import dao.AbstractDao;
-import dao.EmployeesDao;
 import entities.Employee;
 import metamodel.dao.GrantsDao;
-import metamodel.dao.models.Grants;
 import metamodel.dao.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import service.EmployeesService;
+import service.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/employees")
 public class EmployeesController {
+
     @Autowired
-    private EmployeesService employeesService;
+    private Service<Employee> employeesService;
 
     @Autowired
     private GrantsDao grantsDao;
-
-    public EmployeesController() {
-    }
 
     @GetMapping("/")
     public String getAll(Model model, HttpServletRequest httpServletRequest) {
@@ -44,7 +38,10 @@ public class EmployeesController {
         if (employee == null)
             return "redirect:/";
 
+        boolean isUpdatable =  grantsDao.isWritableObj(role, empId);
+
         model.addAttribute("employee", employee);
+        model.addAttribute("updatable", isUpdatable);
         return "employee";
     }
 
@@ -66,20 +63,19 @@ public class EmployeesController {
 
         if(!grantsDao.isWritableObj(role, employeeId)) return "redirect:/" + employeeId;
 
-        Employee employee = employeesService.get(role, employeeId);
+        Employee employee = employeesService.getForUpdate(role, employeeId);
 
         model.addAttribute("grant", role);
         model.addAttribute("employee", employee);
-
-
 
         return "updateEmp";
     }
 
     @PostMapping("/update")
-    public String setUpdateEmp(@ModelAttribute Employee employee, HttpServletRequest httpServletRequest) {
+    public String setUpdateEmp(HttpServletRequest httpServletRequest) {
         Role role = MainController.getGrant(grantsDao, httpServletRequest);
-        employeesService.update(role, employee);
+        Map<String, String[]> stringMap = httpServletRequest.getParameterMap();
+        employeesService.update(role, Integer.parseInt(stringMap.get("objectId")[0]), stringMap);
         return "redirect:/";
     }
 }

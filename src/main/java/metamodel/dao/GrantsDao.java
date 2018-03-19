@@ -10,6 +10,6 @@ public interface GrantsDao {
     Role findByName(String roleName);
     Boolean isReadableObj(Role role, Integer objId);
     Boolean isWritableObj(Role role, Integer objId);
-    Boolean isReadableAttr(Role role, Integer objId, Integer attrId);
-    Boolean isWritableAttr(Role role, Integer objId, Integer attrId);
+    Boolean isReadableAttr(Role role, Integer attrId);
+    Boolean isWritableAttr(Role role, Integer attrId);
 }

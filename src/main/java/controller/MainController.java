@@ -36,8 +36,6 @@ public class MainController {
         return "redirect:/";
     }
 
-
-
     public static Role getGrant(GrantsDao grantsDao, HttpServletRequest httpServletRequest){
         HttpSession session = httpServletRequest.getSession();
         Role role = (Role) session.getAttribute("role");
