@@ -32,9 +32,9 @@ public abstract class AbstractService<T extends AbstractObject> implements Servi
         List<T> temps = dao.findAll();
         List<T> checkedTemps = new ArrayList<>();
         for (T temp : temps) {
-            T checkedEmp = checkPermission(role, temp);
-            if (checkedEmp != null)
-                checkedTemps.add(checkedEmp);
+            T checkedTemp = checkPermission(role, temp);
+            if (checkedTemp != null)
+                checkedTemps.add(checkedTemp);
         }
         return checkedTemps;
     }
@@ -44,9 +44,9 @@ public abstract class AbstractService<T extends AbstractObject> implements Servi
         List<T> temps = dao.findByParentId(parentId);
         List<T> checkedTemps = new ArrayList<>();
         for (T temp : temps) {
-            T checkedEmp = checkPermission(role, temp);
-            if (checkedEmp != null)
-                checkedTemps.add(checkedEmp);
+            T checkedTemp = checkPermission(role, temp);
+            if (checkedTemp != null)
+                checkedTemps.add(checkedTemp);
         }
         return checkedTemps;
     }
@@ -95,7 +95,7 @@ public abstract class AbstractService<T extends AbstractObject> implements Servi
             Map<String, Params> paramsMap = new HashMap<>();
             for (Params param : metaObject.getParamsMap().values()) {
                 Boolean permission = grantsDao.isWritableAttr(role, param.getAttrId());
-                if (permission == null) permission = false;
+                if (permission == null) permission = true;
                 if (permission) paramsMap.put(param.getAttrName(), param);
                 else paramsMap.put(param.getAttrName(), new Params());
             }
